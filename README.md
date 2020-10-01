@@ -1,8 +1,7 @@
 # Practical Assignment 1
 **Deadline**: 01.10.2020
 
-Please put your name here:  
-**Name**: .......
+**Name**: SHOROUK AWWAD
 ## Foreword
 ### Implementation of a Minimal Ray Tracing System
 
