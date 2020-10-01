@@ -1,23 +1,25 @@
-#include "CameraPerspective.h"
-#include "CameraOrthographic.h"
 
 #include "PrimSphere.h"
 #include "PrimPlane.h"
 #include "PrimTriangle.h"
-
+#include "CameraOrthographic.h"
+#include "CameraPerspective.h"
+#include "PrimDisc.h"
+using namespace std;
+#include <vector>
 Mat RenderFrame(ICamera& camera)
 {
 	// scene objects
 	
-	CPrimSphere s1(Vec3f(-2, 1.7f, 0), 2);
-	CPrimSphere s2(Vec3f(1, -1, 1), 2.2f);
-	CPrimSphere s3(Vec3f(3, 0.8f, -2), 2);
-	CPrimPlane p1(Vec3f(0, -1, 0), Vec3f(0, 1, 0));
+	CPrimSphere s1(Vec3f(-2, 1.7f, 0), 2,RGB(0,1,0));
+	CPrimSphere s2(Vec3f(1, -1, 1), 2.2f,RGB(0,0,1));
+	CPrimSphere s3(Vec3f(3, 0.8f, -2), 2, RGB(0, 1, 1));
+	CPrimPlane p1(Vec3f(0, -1, 0), Vec3f(0, 1, 0), RGB(1,0,1));
 	// Add disc primitive here
-	
-	CPrimTriangle t1(Vec3f(-2, 3.7f, 0), Vec3f(1, 2, 1), Vec3f(3, 2.8f, -2));
-	CPrimTriangle t2(Vec3f(3, 2, 3), Vec3f(3, 2, -3), Vec3f(-3, 2, -3));
-	
+	CPrimDisc d1(Vec3f(0, -1, 0), Vec3f(0.3, 1, 0.3), 2.2, RGB(1, 0, 1));
+	CPrimTriangle t1(Vec3f(-2, 3.7f, 0), Vec3f(1, 2, 1), Vec3f(3, 2.8f, -2), RGB(1,1,0));
+	CPrimTriangle t2(Vec3f(3, 2, 3), Vec3f(3, 2, -3), Vec3f(-3, 2, -3), RGB(1, 1, 1));
+	vector<Iprim*> objects = { &s1,&s2,&s3,&p1,&d1,&t1,&t2 };
 	Mat img(camera.getResolution(), CV_32FC3); 	// image array
 	Ray ray;                            		// primary ray
 	
@@ -25,6 +27,7 @@ Mat RenderFrame(ICamera& camera)
 		for (int x = 0; x < img.cols; x++) {
 			
 			// Initialize your ray here
+			camera.InitRay(ray, x, y);
 			
 			// --- PUT YOUR CODE HERE ---
 			
@@ -36,7 +39,11 @@ Mat RenderFrame(ICamera& camera)
 			 */
 			
 			 // --- PUT YOUR CODE HERE ---
-			
+			for (auto obj : objects) {
+				if (obj->intersect(ray)) {
+					col = obj->getcolor();
+				}
+			}
 			img.at<Vec3f>(y, x) = col; // store pixel color
 		}
 	
@@ -64,6 +71,11 @@ int main(int argc, char* argv[])
 	// Add orthigraphic camera here as cam4
 	// Mat img4 = RenderFrame(cam4);
 	// imwrite("orthographic4.jpg", img4);
-
+	CCameraOrthographic cam4(resolution, Vec3f(-8, 5, 8), Vec3f(1, -0.1f, -1), Vec3f(1, 1, 0), 45, 3.5);
+	Mat img4 = RenderFrame(cam4);
+	imwrite("orthographic4.jpg", img4);
+	CCameraOrthographic cam5(resolution, Vec3f(-12, 3, 8), Vec3f(1, -0.1f, -1), Vec3f(0, 1, 0), 45, 3.5);
+	Mat img4 = RenderFrame(cam5);
+	imwrite("orthographic5.jpg", img5);
 	return 0;
 }

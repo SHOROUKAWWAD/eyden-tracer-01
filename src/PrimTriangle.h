@@ -30,8 +30,33 @@ public:
 	
 	virtual bool intersect(Ray& ray) const override
 	{
-		// --- PUT YOUR CODE HERE ---
-		return false;
+		Vec3f norm_edge1 = (m_b - ray.org).cross(m_a - ray.org);
+		Vec3f norm_edge2 = (m_c - ray.org).cross(m_b - ray.org);
+		Vec3f norm_edge3 = (m_a - ray.org).cross(m_c - ray.org);
+
+		float Area = norm_edge1.dot(ray.dir) + norm_edge2.dot(ray.dir) + norm_edge3.dot(ray.dir);
+		float L1 = norm_edge1.dot(ray.dir) / Area;
+		if (L1 < 0 || L1>1) {
+			return false;
+		}
+		float L2 = norm_edge2.dot(ray.dir) / Area;
+		if (L2 < 0 || L2 >1) {
+			return false;
+		}
+		float L3= norm_edge3.dot(ray.dir) / Area;
+		if ( L3 < 0 || L3 > 1)
+		{
+			return false;
+		}
+		Vec3f pvec = L1 * m_a + L2 * m_b + L3 * m_c;
+		float t = pvec[0] / ray.dir[0];
+
+		if (t < Epsilon || t > ray.t)
+		{
+			return false;
+		}
+		ray.t = t;
+		return true;
 	}
 
 	

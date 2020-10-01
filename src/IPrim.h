@@ -3,6 +3,7 @@
 #pragma once
 
 #include "types.h"
+#include <cmath>
 
 struct Ray;
 // ================================ Primitive Interface Class ================================
@@ -21,7 +22,12 @@ public:
 	IPrim(const IPrim&) = delete;
 	virtual ~IPrim(void) = default;
 	const IPrim& operator=(const IPrim&) = delete;
-
+	IPrim(Vec3f color_) {
+		color = color;
+	}
+	Vec3f getcolor() {
+		return color;
+	}
 	/**
 	 * @brief Checks for intersection between ray \b ray and the primitive
 	 * @details If a valid intersection has been found with the primitive, it sets Ray::t to the distance to this intersection
@@ -31,4 +37,6 @@ public:
 	 * @retval false Otherwise
 	 */
 	virtual bool	intersect(Ray& ray) const = 0;
+private: 
+	Vec3f color;
 };

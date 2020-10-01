@@ -30,8 +30,20 @@ public:
 
 	virtual bool intersect(Ray& ray) const override
 	{
-		// --- PUT YOUR CODE HERE ---
-		return false;
+		if (denominator == 0)
+		{
+			return 0;
+		}
+		else
+		{
+			t = numerator / denominator;
+		}
+
+		if (t < Epsilon || t > ray.t)
+		{
+			return false;
+		}
+		ray.t = t;
 	}
 	
 	

@@ -56,3 +56,4 @@ private:
 
 using ptr_camera_t = std::shared_ptr<ICamera>;
 
+ 
